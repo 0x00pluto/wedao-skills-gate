@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 互远 AI 技能中心 · Huyuan AI Skills Gate
 
-## Getting Started
+基于 [Next.js](https://nextjs.org)（App Router）的 Web 入口：展示互远 AI 技能中心欢迎页，并提供纯服务端的 **GitHub App Installation 访问令牌**签发接口，供受控系统集成使用。
 
-本仓库使用 [pnpm](https://pnpm.io) 管理依赖。若尚未安装：`corepack enable`（推荐）或参考 pnpm 官方安装方式。
+更细的协作约定与自动化说明见 [AGENTS.md](AGENTS.md)。
 
-安装依赖：`pnpm install`
+## 技术栈
 
-启动开发服务器：
+- Next.js 16、React 19、TypeScript
+- Tailwind CSS v4
+- GitHub 集成：[@octokit/app](https://github.com/octokit/app.js)
+
+## 本地开发
+
+本仓库使用 [pnpm](https://pnpm.io)（见 `packageManager` 字段）。若尚未安装：`corepack enable`（推荐）或参考 pnpm 官方文档。
 
 ```bash
+pnpm install
 pnpm dev
 ```
 
-（亦可用 `npm run dev` / `yarn dev` / `bun dev`，但以 pnpm 为准。）
+浏览器打开 [http://localhost:3000](http://localhost:3000) 查看首页。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+pnpm build   # 生产构建
+pnpm start   # 生产启动
+pnpm lint    # ESLint
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 环境变量
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. 复制 `.env.example` 为 `.env.local`，按注释填入真实值（**勿将 `.env.local` 提交到 Git**）。
+2. 部署到 Vercel 等平台时，在控制台配置同名环境变量。
 
-## Learn More
+| 变量 | 说明 |
+|------|------|
+| `VALID_COMPANY_KEY` | 调用下方 Token API 时，查询参数 `key` 须与此一致 |
+| `GITHUB_APP_ID` | GitHub App 的 App ID |
+| `GITHUB_INSTALLATION_ID` | App 安装后的 Installation ID |
+| `GITHUB_PRIVATE_KEY` | App 私钥（PEM；可为多行或带 `\n` 的单行） |
 
-To learn more about Next.js, take a look at the following resources:
+## HTTP API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 获取 Installation Token
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`GET /api/token?key=<VALID_COMPANY_KEY>`
 
-## Deploy on Vercel
+成功时返回 JSON：`{ "token": "<installation_access_token>" }`。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 仅服务端逻辑；请在 **HTTPS** 环境下调用，并妥善保管 `key` 与返回的 `token`。
+- MVP 使用查询参数传 `key`，生产环境建议后续改为请求头等方式并配合审计与限流。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**本地 curl 示例：**
+
+```bash
+curl -sS -G "http://localhost:3000/api/token" --data-urlencode "key=你的企业Key"
+```
+
+## 部署
+
+推荐使用 [Vercel](https://vercel.com) 部署 Next.js 应用，并在项目中配置上述环境变量。详见 [Next.js 部署文档](https://nextjs.org/docs/app/building-your-application/deploying)。
+
+## 了解更多
+
+- [Next.js 文档](https://nextjs.org/docs)
+- [Next.js 学习教程](https://nextjs.org/learn)

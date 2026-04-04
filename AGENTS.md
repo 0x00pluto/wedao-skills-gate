@@ -4,8 +4,9 @@
 
 ## 项目简介
 
-- **名称**：`huyuan-ai-skills-gate`
+- **名称**：`huyuan-ai-skills-gate`（互远 AI 技能中心入口）
 - **栈**：Next.js 16、React 19、TypeScript、[App Router](https://nextjs.org/docs/app)（源码主要在 `app/`）
+- **服务端 API**：`GET /api/token?key=...` 签发 GitHub Installation 访问令牌；实现见 [`app/api/token/route.ts`](app/api/token/route.ts)，Octokit 封装见 [`lib/github-app.ts`](lib/github-app.ts)。详情与 curl 示例见 [README.md](README.md)。
 
 ## 包管理与命令
 
@@ -20,6 +21,8 @@
 ## 环境变量
 
 - 本地：复制 `.env.example` 为 `.env.local`，再填入真实值（Next.js 会加载 `.env.local`）。
+- **调用 Token API 的鉴权**（名称与 `.env.example` 一致）：
+  - `VALID_COMPANY_KEY` — 与请求查询参数 `key` 一致，用于 MVP 阶段的企业/调用方校验
 - **GitHub App 相关**（名称与 `.env.example` 一致）：
   - `GITHUB_APP_ID` — GitHub App 的 App ID
   - `GITHUB_INSTALLATION_ID` — 安装到组织/仓库后的 Installation ID
@@ -40,4 +43,4 @@
 ## 安全与隐私
 
 - 不要读取、复述或粘贴用户 `.env.local` 中的真实密钥。
-- 文档与示例中仅使用占位符，不出现真实 App ID、Installation ID 或私钥内容。
+- 文档与示例中仅使用占位符，不出现真实 App ID、Installation ID、私钥或 `VALID_COMPANY_KEY` 内容。
