@@ -35,10 +35,16 @@ pnpm lint    # ESLint
 | 变量 | 说明 |
 |------|------|
 | `NEXT_PUBLIC_SKILLS_GATE_ORIGIN` | （可选）首页一键安装命令里展示的站点根地址，如 `https://skills.example.com`，无末尾斜杠。未配置时首页使用浏览器当前访问的 origin。 |
-| `VALID_COMPANY_KEY` | 调用下方 Token API 时，查询参数 `key` 须与此一致 |
 | `GITHUB_APP_ID` | GitHub App 的 App ID |
 | `GITHUB_INSTALLATION_ID` | App 安装后的 Installation ID |
 | `GITHUB_PRIVATE_KEY` | App 私钥（PEM；可为多行或带 `\n` 的单行） |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 项目 URL（`*.supabase.co`） |
+| `SUPABASE_ANON_KEY` | Supabase anon 公钥（受 RLS 约束；与 Dashboard「anon public」一致） |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service_role（**仅服务端**；Token API 校验企业与技能授权、同步接口写入 `skills` 等） |
+| `ADMIN_SYNC_API_KEY` | 调用下方「同步技能目录」接口时，请求头 `x-api-key` 须与此一致 |
+| `SKILLS_HUB_OWNER` | （可选）索引 YAML 所在仓库 owner，默认 `WeDAOLabs` |
+| `SKILLS_HUB_REPO` | （可选）索引 YAML 所在仓库名，默认 `skills-hub` |
+| `SKILLS_HUB_INDEX_PATH` | （可选）仓库内文件路径，默认 `skills.index.yaml` |
 
 ## 一键安装脚本
 
@@ -58,18 +64,53 @@ curl -fsSL "https://你的域名/install.sh" | bash
 
 ### 获取 Installation Token
 
-`GET /api/token?key=<VALID_COMPANY_KEY>`
+`GET /api/token?key=<enterprise_key>&skillId=<技能ID>`
 
-成功时返回 JSON：`{ "token": "<installation_access_token>" }`。
+- `key`：与 Supabase `companies.enterprise_key` 一致的企业授权码。
+- `skillId`：目标技能 ID（须在该企业的 `company_skills` 授权范围内）。
+
+成功时返回 JSON：`{ "token": "<installation_access_token>" }`（与此前成功形态一致）。
+
+| 状态码 | 含义 |
+|--------|------|
+| `200` | 校验通过，返回 installation token |
+| `400` | 未提供 `skillId`（响应体含提示文案） |
+| `403` | 企业 key 无效、已过期，或无权访问该技能 |
+| `500` | 服务端错误（如未配置 Supabase/GitHub 环境变量） |
 
 - 仅服务端逻辑；请在 **HTTPS** 环境下调用，并妥善保管 `key` 与返回的 `token`。
-- MVP 使用查询参数传 `key`，生产环境建议后续改为请求头等方式并配合审计与限流。
+- 查询参数传参便于对接；生产环境可再改为请求头等方式并配合审计与限流。
 
 **本地 curl 示例：**
 
 ```bash
-curl -sS -G "http://localhost:3000/api/token" --data-urlencode "key=你的企业Key"
+curl -sS -G "http://localhost:3000/api/token" \
+  --data-urlencode "key=你的企业Key" \
+  --data-urlencode "skillId=huyuan-ai-skill-installer"
 ```
+
+### 同步技能目录（管理员）
+
+`POST /api/admin/sync`
+
+使用服务端已配置的 GitHub App 安装令牌读取私有仓库中的 `skills.index.yaml`，解析后 **upsert** 到 Supabase `skills` 表。须携带请求头 `x-api-key`，值与环境变量 `ADMIN_SYNC_API_KEY` 一致。
+
+成功时返回 JSON，例如：`{ "ok": true, "synced": <数量>, "source": { "owner", "repo", "path" } }`。
+
+| 状态码 | 含义 |
+|--------|------|
+| `200` | 同步成功 |
+| `401` | 未授权（`x-api-key` 缺失或不匹配） |
+| `500` | 服务端错误（如未配置密钥、GitHub/Supabase 失败） |
+
+**本地 curl 示例：**
+
+```bash
+curl -sS -X POST "http://localhost:3000/api/admin/sync" \
+  -H "x-api-key: 你的同步接口密钥"
+```
+
+私有仓库 YAML 更新后由 GitHub Actions 自动触发 Vercel 接口的步骤，见 [docs/skills-sync-action.md](docs/skills-sync-action.md)。
 
 ## 部署
 

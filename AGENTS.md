@@ -6,7 +6,12 @@
 
 - **名称**：`huyuan-ai-skills-gate`（互远 AI 技能中心入口）
 - **栈**：Next.js 16、React 19、TypeScript、[App Router](https://nextjs.org/docs/app)（源码主要在 `app/`）
-- **服务端 API**：`GET /api/token?key=...` 签发 GitHub Installation 访问令牌；实现见 [`app/api/token/route.ts`](app/api/token/route.ts)，Octokit 封装见 [`lib/github-app.ts`](lib/github-app.ts)。详情与 curl 示例见 [README.md](README.md)。
+- **服务端 API**：`GET /api/token?key=...&skillId=...` 经 Supabase 校验企业与技能授权后签发 GitHub Installation 访问令牌；实现见 [`app/api/token/route.ts`](app/api/token/route.ts)，Octokit 封装见 [`lib/github-app.ts`](lib/github-app.ts)，Supabase 客户端见 [`lib/supabase-server.ts`](lib/supabase-server.ts)。详情与 curl 示例见 [README.md](README.md)。
+- **后端（数据与服务）**：[Supabase](https://supabase.com/) — 数据库、Auth、Edge Functions 等以 Supabase 为准；实现与迁移代码按项目内既有结构维护。
+
+## Supabase 与助手开发
+
+- **MCP**：本仓库在 [`.cursor/mcp.json`](.cursor/mcp.json) 中可配置 Supabase 官方 MCP（远程 `https://mcp.supabase.com/mcp?...`），便于在 Cursor 内让助手结合项目上下文操作/查询 Supabase。具体 `project_ref` 与是否启用以该文件为准；勿在文档或示例中粘贴生产环境密钥或服务角色密钥。
 
 ## 包管理与命令
 
@@ -21,12 +26,16 @@
 ## 环境变量
 
 - 本地：复制 `.env.example` 为 `.env.local`，再填入真实值（Next.js 会加载 `.env.local`）。
-- **调用 Token API 的鉴权**（名称与 `.env.example` 一致）：
-  - `VALID_COMPANY_KEY` — 与请求查询参数 `key` 一致，用于 MVP 阶段的企业/调用方校验
 - **GitHub App 相关**（名称与 `.env.example` 一致）：
   - `GITHUB_APP_ID` — GitHub App 的 App ID
   - `GITHUB_INSTALLATION_ID` — 安装到组织/仓库后的 Installation ID
   - `GITHUB_PRIVATE_KEY` — App 私钥；可为 PEM 多行，或带 `\n` 的单行；部署环境（如 Vercel）支持多行配置，详见 `.env.example` 注释
+- **Supabase**（名称与 `.env.example` 一致；Token API 与同步接口依赖 service_role）：
+  - `NEXT_PUBLIC_SUPABASE_URL` — 项目 URL（`*.supabase.co`）
+  - `SUPABASE_ANON_KEY` — 匿名/公开密钥（与 Dashboard anon 一致；受 RLS 约束；若仅在服务端使用可不使用 `NEXT_PUBLIC_` 前缀）
+  - `SUPABASE_SERVICE_ROLE_KEY` — 服务端密钥，**不得**加 `NEXT_PUBLIC_`，勿暴露给前端；Token API 用其校验 `companies` / `company_skills` 与 `expiry_at`
+  - `SUPABASE_JWT_SECRET` — 可选，仅当自行校验 JWT 或工具要求时再配置
+  - Vercel 同步的 `POSTGRES_*`、`SUPABASE_URL` 等与直连数据库或平台集成相关；未在代码中使用 Prisma 等直连时，通常不必在应用里重复配置（以实际代码引用为准）。
 - 勿将含密钥的 `.env.local` 提交到 Git。
 
 ## pnpm 与依赖构建脚本
@@ -43,4 +52,4 @@
 ## 安全与隐私
 
 - 不要读取、复述或粘贴用户 `.env.local` 中的真实密钥。
-- 文档与示例中仅使用占位符，不出现真实 App ID、Installation ID、私钥或 `VALID_COMPANY_KEY` 内容。
+- 文档与示例中仅使用占位符，不出现真实 App ID、Installation ID、私钥、企业 `enterprise_key`、Supabase `service_role` / anon 密钥等内容。
