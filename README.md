@@ -34,10 +34,25 @@ pnpm lint    # ESLint
 
 | 变量 | 说明 |
 |------|------|
+| `NEXT_PUBLIC_SKILLS_GATE_ORIGIN` | （可选）首页一键安装命令里展示的站点根地址，如 `https://skills.example.com`，无末尾斜杠。未配置时首页使用浏览器当前访问的 origin。 |
 | `VALID_COMPANY_KEY` | 调用下方 Token API 时，查询参数 `key` 须与此一致 |
 | `GITHUB_APP_ID` | GitHub App 的 App ID |
 | `GITHUB_INSTALLATION_ID` | App 安装后的 Installation ID |
 | `GITHUB_PRIVATE_KEY` | App 私钥（PEM；可为多行或带 `\n` 的单行） |
+
+## 一键安装脚本
+
+本仓库在 [`public/install.sh`](public/install.sh) 提供 Bash 安装脚本，部署后与站点**同源**访问：`GET /install.sh`（例如 `https://你的域名/install.sh`）。无需在其他仓库或域名托管该文件。
+
+用户在本机执行：
+
+```bash
+curl -fsSL "https://你的域名/install.sh" | bash
+```
+
+脚本会按需全局安装 `@huyuan-ai/cli`、引导 `huyuan-ai-cli` 登录，并默认安装技能 `huyuan-ai-skill-installer`。可选环境变量（如 `HUYUAN_AI_LOGIN_KEY`、`HUYUAN_SKILL_IDS`）见脚本内注释。
+
+**说明**：这与下面的 **GitHub Installation Token API** 不同；Token API 面向受控系统签发 GitHub 安装令牌，CLI 登录使用企业授权码，由 `huyuan-ai-cli login` 管理。
 
 ## HTTP API
 

@@ -1,4 +1,8 @@
+import { HomeInstallBlock } from "./home-install-client";
+
 export default function Home() {
+  const publicOrigin = process.env.NEXT_PUBLIC_SKILLS_GATE_ORIGIN ?? "";
+
   return (
     <div className="flex flex-1 flex-col">
       <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 py-20">
@@ -21,6 +25,7 @@ export default function Home() {
           <p className="mx-auto max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
             欢迎来到互远 AI 技能中心，后续将在此汇聚更多能力与技能。
           </p>
+          <HomeInstallBlock publicOrigin={publicOrigin} />
         </div>
       </section>
     </div>
