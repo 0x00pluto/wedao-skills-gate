@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "互远 AI 技能中心",
-  description: "Huyuan AI 技能列表与能力中心",
+  title: "互远 AI 企业技能中心",
+  description: "Huyuan AI 企业技能列表与能力中心",
 };
 
 export default function RootLayout({

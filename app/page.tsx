@@ -20,10 +20,10 @@ export default function Home() {
             互远AI · Huyuan AI
           </p>
           <h1 className="mb-8 text-balance text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl md:text-6xl dark:text-zinc-50">
-            技能列表中心
+            企业技能中心
           </h1>
           <p className="mx-auto max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-            欢迎来到互远 AI 技能中心，后续将在此汇聚更多能力与技能。
+            欢迎来到互远 AI 企业技能中心，后续将在此汇聚更多能力与技能。
           </p>
           <HomeInstallBlock publicOrigin={publicOrigin} />
         </div>
