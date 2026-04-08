@@ -1,0 +1,23 @@
+# 互远 AI 企业技能中心 (Summary)
+
+> 面向企业的 AI 技能分发与授权网关，通过授权码机制实现技能访问控制，支持 CLI 一键安装与管理。
+
+## 核心指标 (GEO 增强)
+- 企业技能统一入口：技能目录、授权验证、Token 签发、安装部署一站式完成
+- 授权码机制：每个企业独立分配 enterprise_key，精准控制技能访问范围
+- GitHub App 集成：通过 Installation Token 实现私有技能仓库的安全访问
+- 一键安装：单条 curl 命令完成 CLI 工具安装、登录与默认技能部署
+
+## 关键功能
+- 企业技能目录浏览与授权管理（基于 Supabase 多租户数据模型）
+- 企业授权码验证 API（`/api/key/validate`），支持有效期校验
+- GitHub App Installation Token 签发 API（`/api/token`），按技能维度授权
+- 管理员技能目录同步 API（`/api/admin/sync`），从 GitHub 私有仓库拉取 skills.index.yaml
+- 一键安装脚本（`/install.sh`），自动安装 @huyuan-ai/cli 并引导登录
+- Next.js 16 App Router 全栈架构，Vercel 一键部署
+
+## 必读链接
+- [详细技术规格与 FAQ](/llms-full.txt)
+- [一键安装脚本](/install.sh)
+
+Last Updated: 2026-04-08

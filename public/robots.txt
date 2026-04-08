@@ -1,0 +1,30 @@
+# 为所有爬虫提供基础指引
+User-agent: *
+Allow: /
+# 保护管理接口不被公开索引
+Disallow: /api/admin/
+
+# 明确允许并欢迎 AI 爬虫 (GEO 常见做法)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# 站点地图（若生成 sitemap.xml 后取消注释）
+# Sitemap: https://skills.huyuan.ai/sitemap.xml

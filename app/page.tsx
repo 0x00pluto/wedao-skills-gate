@@ -25,6 +25,9 @@ export default function Home() {
           <p className="mx-auto max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
             欢迎来到互远 AI 企业技能中心，后续将在此汇聚更多能力与技能。
           </p>
+          <span id="install-step-1" />
+          <span id="install-step-2" />
+          <span id="install-step-3" />
           <HomeInstallBlock publicOrigin={publicOrigin} />
         </div>
       </section>
