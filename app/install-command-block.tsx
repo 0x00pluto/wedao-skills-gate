@@ -1,13 +1,16 @@
 "use client";
 
+import { installCommandRootClasses } from "@/lib/install-command-layout";
 import { useCallback, useState } from "react";
 
 type Props = {
   /** 构建时注入的公网根地址，如 https://skills.example.com（无末尾斜杠） */
   publicOrigin: string;
+  /** 合并到根容器；例如两栏卡片内传入 `mt-0 max-w-none` */
+  className?: string;
 };
 
-export function InstallCommandBlock({ publicOrigin }: Props) {
+export function InstallCommandBlock({ publicOrigin, className }: Props) {
   const [origin] = useState(() => {
     const fromEnv = publicOrigin.trim();
     if (fromEnv) return fromEnv;
@@ -32,7 +35,7 @@ export function InstallCommandBlock({ publicOrigin }: Props) {
   }, [line]);
 
   return (
-    <div className="mt-12 w-full max-w-xl text-left">
+    <div className={installCommandRootClasses(className)}>
       <h2 className="mb-3 text-sm font-semibold tracking-wide text-zinc-800 dark:text-zinc-200">
         一键安装
       </h2>

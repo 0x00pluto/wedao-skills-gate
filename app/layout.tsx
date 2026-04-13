@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -99,8 +101,10 @@ export default function RootLayout({
         />
       </head>
       {/* suppressHydrationWarning: 部分浏览器扩展会向 html/body 注入属性（如 data-atm-ext-installed），与 SSR 不一致 */}
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        {children}
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
+        <SiteHeader />
+        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        <SiteFooter />
       </body>
     </html>
   );
