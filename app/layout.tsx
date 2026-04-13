@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://skills.huyuan.ai"),
   title: "互远 AI 企业技能中心",
   description: "Huyuan AI 企业技能列表与能力中心",
+  icons: {
+    icon: [{ url: "/brand-mark.svg", type: "image/svg+xml" }],
+    shortcut: "/brand-mark.svg",
+    apple: "/brand-mark.svg",
+  },
 };
 
 const jsonLd = {

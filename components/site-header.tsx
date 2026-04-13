@@ -1,32 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
-
-function BrandMark({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <rect
-        width="32"
-        height="32"
-        rx="8"
-        className="fill-zinc-900 dark:fill-zinc-100"
-      />
-      <path
-        d="M9 10h3.2v12H9V10zm10.8 0H23v12h-3.2v-4.6h-3.6V22H13V10h3.2v4.4h3.6V10z"
-        className="fill-white dark:fill-zinc-900"
-      />
-    </svg>
-  );
-}
 
 function SearchIcon({ className }: { className?: string }) {
   return (
@@ -119,7 +97,14 @@ export function SiteHeader() {
             href="/"
             className="flex shrink-0 items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-zinc-600"
           >
-            <BrandMark className="size-8 shrink-0" />
+            <Image
+              src="/brand-mark.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8 shrink-0 rounded-lg"
+              unoptimized
+            />
             <span className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
               Huyuan AI
             </span>
