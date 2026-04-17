@@ -60,6 +60,40 @@ export async function getSkillsCount(): Promise<number | null> {
   }
 }
 
+export async function getSkillById(id: string): Promise<SkillCatalogRow | null> {
+  try {
+    const trimmedId = id.trim();
+    if (!trimmedId) return null;
+
+    const supabase = getSupabaseServiceRoleClient();
+    const { data, error } = await supabase
+      .from("skills")
+      .select("id, name, version, description, tags, updated_at")
+      .eq("id", trimmedId)
+      .maybeSingle();
+
+    if (error) {
+      console.error("getSkillById", error);
+      return null;
+    }
+
+    if (!data) return null;
+
+    return normalizeRow(
+      data as {
+        id: string;
+        name: string;
+        version: string;
+        description: string | null;
+        tags: string[] | null;
+        updated_at: string | null;
+      },
+    );
+  } catch {
+    return null;
+  }
+}
+
 /** PostgREST `or()` 片段；无搜索词时不应用 */
 function searchOrFilterClause(q: string): string | null {
   if (q.length === 0) return null;

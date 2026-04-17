@@ -1,4 +1,7 @@
+"use client";
+
 import type { SkillCatalogRow } from "@/lib/skills-catalog";
+import { useRouter } from "next/navigation";
 
 function formatUpdatedAt(value: string | null): string {
   if (!value) return "—";
@@ -13,6 +16,12 @@ function formatUpdatedAt(value: string | null): string {
 }
 
 export function SkillsTable({ rows }: { rows: SkillCatalogRow[] }) {
+  const router = useRouter();
+
+  const goToDetail = (id: string) => {
+    router.push(`/skills/${id}`);
+  };
+
   if (rows.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50 px-6 py-12 text-center text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/30 dark:text-zinc-400">
@@ -44,11 +53,21 @@ export function SkillsTable({ rows }: { rows: SkillCatalogRow[] }) {
           {rows.map((row, index) => (
             <tr
               key={row.id}
-              className={
+              onClick={() => goToDetail(row.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  goToDetail(row.id);
+                }
+              }}
+              tabIndex={0}
+              role="link"
+              aria-label={`查看技能 ${row.name}`}
+              className={`cursor-pointer outline-none transition-colors hover:bg-zinc-100 focus-visible:bg-zinc-100 dark:hover:bg-zinc-800/60 dark:focus-visible:bg-zinc-800/60 ${
                 index % 2 === 1
                   ? "bg-zinc-50/80 dark:bg-zinc-900/25"
                   : "bg-white dark:bg-zinc-950/40"
-              }
+              }`}
             >
               <td className="align-top px-4 py-3">
                 <div className="font-semibold text-zinc-900 dark:text-zinc-100">

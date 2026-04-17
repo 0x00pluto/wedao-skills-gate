@@ -106,7 +106,7 @@ export function SiteHeader() {
               unoptimized
             />
             <span className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Huyuan AI
+              Huyuan AI SkillHub
             </span>
           </Link>
 
