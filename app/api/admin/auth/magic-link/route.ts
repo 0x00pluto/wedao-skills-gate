@@ -25,6 +25,10 @@ function getOriginFromRequest(request: NextRequest): string {
   return configured;
 }
 
+function isLocalOrigin(origin: string): boolean {
+  return /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(origin);
+}
+
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const emailRaw = String(formData.get("email") ?? "");
@@ -48,6 +52,24 @@ export async function POST(request: NextRequest) {
     const supabase = getSupabaseAnonClient();
     const origin = getOriginFromRequest(request);
     const redirectTo = `${origin}/auth/callback?next=${encodeURIComponent(next)}`;
+    const isProd = process.env.NODE_ENV === "production";
+    if (isProd && isLocalOrigin(origin)) {
+      console.error("Magic link blocked: local origin in production", {
+        configuredOrigin: process.env.NEXT_PUBLIC_SKILLS_GATE_ORIGIN ?? "",
+        requestOrigin: request.nextUrl.origin,
+        resolvedOrigin: origin,
+      });
+      return NextResponse.redirect(
+        new URL("/admin/login?error=server", request.url),
+      );
+    }
+    console.info("Magic link redirect target", {
+      email,
+      configuredOrigin: process.env.NEXT_PUBLIC_SKILLS_GATE_ORIGIN ?? "",
+      requestOrigin: request.nextUrl.origin,
+      resolvedOrigin: origin,
+      redirectTo,
+    });
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
