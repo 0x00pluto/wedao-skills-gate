@@ -46,6 +46,22 @@ pnpm lint    # ESLint
 | `SKILLS_HUB_REPO` | （可选）索引 YAML 所在仓库名，默认 `skills-hub` |
 | `SKILLS_HUB_INDEX_PATH` | （可选）仓库内文件路径，默认 `skills.index.yaml` |
 
+## 数据库迁移（Supabase CLI）
+
+本仓库采用 `supabase/migrations/` 管理数据库结构变更（DDL）。
+
+```bash
+pnpm db:migration:new -- create_xxx
+pnpm db:migration:list
+pnpm db:migrate
+```
+
+- migration 文件目录：`supabase/migrations/`
+- migration 命名格式：`<timestamp>_<snake_case>.sql`
+- 已纳管示例：`admin_whitelist`（见 `supabase/migrations/202604240001_create_admin_whitelist.sql`）
+
+详细协作规范见 [docs/supabase-migrations.md](docs/supabase-migrations.md)。
+
 ## 一键安装脚本
 
 本仓库在 [`public/install.sh`](public/install.sh) 提供 Bash 安装脚本，部署后与站点**同源**访问：`GET /install.sh`（例如 `https://你的域名/install.sh`）。无需在其他仓库或域名托管该文件。

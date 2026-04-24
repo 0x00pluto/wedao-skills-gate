@@ -1,6 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let cached: SupabaseClient | null = null;
+let cachedAnon: SupabaseClient | null = null;
 
 /**
  * 服务端专用 Supabase 客户端（service_role，可绕过 RLS）。
@@ -28,4 +29,30 @@ export function getSupabaseServiceRoleClient(): SupabaseClient {
   });
 
   return cached;
+}
+
+/**
+ * 服务端可用的 Supabase anon 客户端（用于 Auth OTP/回调）。
+ * 该客户端受项目 Auth/RLS 策略约束，不可替代 service_role。
+ */
+export function getSupabaseAnonClient(): SupabaseClient {
+  if (cachedAnon) {
+    return cachedAnon;
+  }
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_ANON_KEY");
+  }
+
+  cachedAnon = createClient(url, anonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+
+  return cachedAnon;
 }

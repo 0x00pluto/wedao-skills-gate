@@ -42,3 +42,15 @@
 | `skill_id` | `text` | 外键 → `skills.id`；有引用时不允许删技能 |
 
 **主键**：`(company_id, skill_id)`。
+
+---
+
+## `admin_whitelist`
+
+管理后台最小访问控制白名单；仅在此表中且 `status='active'` 的邮箱允许进入 `/admin`。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `email` | `text` | 主键；管理员邮箱（建议统一小写） |
+| `status` | `text` | 状态，默认 `active`（可选 `disabled`） |
+| `created_at` | `timestamptz` | 创建时间，默认 `now()` |

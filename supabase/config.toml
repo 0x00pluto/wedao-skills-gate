@@ -1,0 +1,7 @@
+# Supabase CLI project configuration.
+# 与 .cursor/mcp.json 中的 project_ref 保持一致。
+project_id = "maepqaglfebzeqailerw"
+
+[db]
+# 与 Supabase 托管 Postgres 主版本保持一致。
+major_version = 17

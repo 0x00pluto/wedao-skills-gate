@@ -4,3 +4,4 @@
 
 - docs/supabase-tables.md: Supabase 权限库 `companies` / `skills` / `company_skills` 字段表与 RLS 说明。
 - docs/skills-sync-action.md: 私有仓库 `skills.index.yaml` 更新后通过 GitHub Actions 调用 Vercel `POST /api/admin/sync` 的 Secrets 与 workflow 模板。
+- docs/supabase-migrations.md: Supabase migration 目录约定、命名规则、执行命令与协作流程。

@@ -12,6 +12,7 @@
 ## Supabase 与助手开发
 
 - **MCP**：本仓库在 [`.cursor/mcp.json`](.cursor/mcp.json) 中可配置 Supabase 官方 MCP（远程 `https://mcp.supabase.com/mcp?...`），便于在 Cursor 内让助手结合项目上下文操作/查询 Supabase。具体 `project_ref` 与是否启用以该文件为准；勿在文档或示例中粘贴生产环境密钥或服务角色密钥。
+- **Migration 优先**：凡 DDL 变更（建表、改表、索引、约束、RLS）必须先写入 `supabase/migrations/*.sql`，再执行迁移并更新文档；`docs/sql/` 仅作历史参考，不作为主执行入口。
 
 ## 包管理与命令
 
